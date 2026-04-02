@@ -6,8 +6,8 @@ const initialState = {
         { id: "PT002", name: "Priya Singh", age: 32, gender: "Female", contact: "8765432109", disease: "Viral Fever" },
     ],
     medicines: [
-        { id: "M001", name: "Paracetamol 500mg", company: "GSK", price: "15.00", expiry: "2025-12-10" },
-        { id: "M002", name: "Amoxicillin 250mg", company: "Cipla", price: "45.50", expiry: "2024-08-15" },
+        { id: "M001", name: "Paracetamol 500mg", company: "GSK", price: "15.00", expiry: "2027-12-10" },
+        { id: "M002", name: "Amoxicillin 250mg", company: "Cipla", price: "45.50", expiry: "2028-08-15" },
     ],
     bills: [],
     stock: [
