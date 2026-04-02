@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediManage - Medical System</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                    <span>MediManage</span>
+                </div>
+                <button id="close-sidebar" class="mobile-only btn-icon">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">MENU</div>
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <i class="fa-solid fa-chart-pie"></i> Dashboard
+                </a>
+                <a href="#" class="nav-item" data-page="patients">
+                    <i class="fa-solid fa-users"></i> Patient Management
+                </a>
+                <a href="#" class="nav-item" data-page="medicines">
+                    <i class="fa-solid fa-capsules"></i> Medicine Management
+                </a>
+                <a href="#" class="nav-item" data-page="billing">
+                    <i class="fa-solid fa-file-invoice-dollar"></i> Billing
+                </a>
+                <a href="#" class="nav-item" data-page="stock">
+                    <i class="fa-solid fa-box"></i> Stock Management
+                </a>
+                <a href="#" class="nav-item" data-page="reports">
+                    <i class="fa-solid fa-chart-simple"></i> Reports
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                Medical Management System<br>v1.0.0
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="main-wrapper">
+            <!-- Mobile Header -->
+            <header class="mobile-header mobile-only">
+                <button id="open-sidebar" class="btn-icon">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="logo">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                    <span>MediManage</span>
+                </div>
+            </header>
+
+            <main id="main-content" class="content">
+                <!-- Dashboard Page -->
+                <div id="page-dashboard" class="page active">
+                    <div class="page-header">
+                        <h1 class="page-title">Welcome to MediManage</h1>
+                        <p class="page-description">Central dashboard for your clinic and medical store operations.</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-title">Total Patients</span>
+                                <div class="stat-icon bg-blue-100 text-blue-600">
+                                    <i class="fa-solid fa-users"></i>
+                                </div>
+                            </div>
+                            <div class="stat-body">
+                                <div class="stat-value" id="stat-patients">0</div>
+                                <div class="stat-trend" id="stat-patients-trend">In current session</div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-title">Medicines</span>
+                                <div class="stat-icon bg-emerald-100 text-emerald-600">
+                                    <i class="fa-solid fa-capsules"></i>
+                                </div>
+                            </div>
+                            <div class="stat-body">
+                                <div class="stat-value" id="stat-medicines">0</div>
+                                <div class="stat-trend" id="stat-medicines-trend">inventory items</div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-title">Total Sales</span>
+                                <div class="stat-icon bg-violet-100 text-violet-600">
+                                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                                </div>
+                            </div>
+                            <div class="stat-body">
+                                <div class="stat-value" id="stat-sales">₹0</div>
+                                <div class="stat-trend" id="stat-sales-trend">bills generated</div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-title">Low Stock</span>
+                                <div class="stat-icon bg-amber-100 text-amber-600" id="stat-stock-icon">
+                                    <i class="fa-solid fa-box"></i>
+                                </div>
+                            </div>
+                            <div class="stat-body">
+                                <div class="stat-value" id="stat-low-stock">0</div>
+                                <div class="stat-trend" id="stat-low-stock-trend">Requires attention</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Quick Actions</h2>
+                                <p class="card-description">Common tasks to manage your system</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="quick-actions">
+                                    <a href="#" class="quick-action-link" onclick="app.navigateTo('patients')">
+                                        <div class="qa-icon">
+                                            <i class="fa-solid fa-users text-primary"></i>
+                                        </div>
+                                        <div class="qa-content">
+                                            <div class="qa-title">Register New Patient</div>
+                                            <div class="qa-desc">Add a new patient record to the system</div>
+                                        </div>
+                                        <i class="fa-solid fa-arrow-right qa-arrow"></i>
+                                    </a>
+                                    <a href="#" class="quick-action-link" onclick="app.navigateTo('billing')">
+                                        <div class="qa-icon">
+                                            <i class="fa-solid fa-file-invoice-dollar text-primary"></i>
+                                        </div>
+                                        <div class="qa-content">
+                                            <div class="qa-title">Generate Bill</div>
+                                            <div class="qa-desc">Create a new medical bill for a patient</div>
+                                        </div>
+                                        <i class="fa-solid fa-arrow-right qa-arrow"></i>
+                                    </a>
+                                    <a href="#" class="quick-action-link" onclick="app.navigateTo('medicines')">
+                                        <div class="qa-icon">
+                                            <i class="fa-solid fa-capsules text-primary"></i>
+                                        </div>
+                                        <div class="qa-content">
+                                            <div class="qa-title">Add Medicine</div>
+                                            <div class="qa-desc">Enter a new medicine into the inventory</div>
+                                        </div>
+                                        <i class="fa-solid fa-arrow-right qa-arrow"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Recent Activity</h2>
+                                <p class="card-description">Latest actions performed in the system</p>
+                            </div>
+                            <div class="card-body">
+                                <div id="recent-activity-list" class="activity-list">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Patients Page -->
+                <div id="page-patients" class="page">
+                    <div class="page-header flex-between">
+                        <div>
+                            <h1 class="page-title">Patient Management</h1>
+                            <p class="page-description">Register and manage patient records.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="document.getElementById('patient-modal').classList.add('active')">
+                            <i class="fa-solid fa-plus"></i> Add Patient
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <div class="table-responsive">
+                            <table class="table" id="patients-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Age/Gender</th>
+                                        <th>Contact</th>
+                                        <th>Disease</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Medicines Page -->
+                <div id="page-medicines" class="page">
+                    <div class="page-header flex-between">
+                        <div>
+                            <h1 class="page-title">Medicine Management</h1>
+                            <p class="page-description">Manage your medicine inventory and pricing.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="document.getElementById('medicine-modal').classList.add('active')">
+                            <i class="fa-solid fa-plus"></i> Add Medicine
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <div class="table-responsive">
+                            <table class="table" id="medicines-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Company</th>
+                                        <th>Price (₹)</th>
+                                        <th>Expiry Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Billing Page -->
+                <div id="page-billing" class="page">
+                    <div class="page-header flex-between">
+                        <div>
+                            <h1 class="page-title">Billing</h1>
+                            <p class="page-description">Generate and manage medical bills.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="document.getElementById('billing-modal').classList.add('active')">
+                            <i class="fa-solid fa-plus"></i> New Bill
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <div class="table-responsive">
+                            <table class="table" id="bills-table">
+                                <thead>
+                                    <tr>
+                                        <th>Bill ID</th>
+                                        <th>Date & Time</th>
+                                        <th>Patient Name</th>
+                                        <th>Total Amount</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stock Page -->
+                <div id="page-stock" class="page">
+                    <div class="page-header">
+                        <h1 class="page-title">Stock Management</h1>
+                        <p class="page-description">Monitor and update inventory levels.</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="table-responsive">
+                            <table class="table" id="stock-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Medicine Name</th>
+                                        <th>Quantity</th>
+                                        <th>Status</th>
+                                        <th>Update Stock</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reports Page -->
+                <div id="page-reports" class="page">
+                    <div class="page-header">
+                        <h1 class="page-title">Reports</h1>
+                        <p class="page-description">View system analytics and summaries.</p>
+                    </div>
+
+                    <div class="reports-grid">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Summary Report</h2>
+                            </div>
+                            <div class="card-body">
+                                <div class="report-stats">
+                                    <div class="report-stat">
+                                        <div class="report-stat-label">Total Revenue</div>
+                                        <div class="report-stat-value" id="report-revenue">₹0</div>
+                                    </div>
+                                    <div class="report-stat">
+                                        <div class="report-stat-label">Total Bills Generated</div>
+                                        <div class="report-stat-value" id="report-bills">0</div>
+                                    </div>
+                                    <div class="report-stat">
+                                        <div class="report-stat-label">Total Patients Registered</div>
+                                        <div class="report-stat-value" id="report-patients">0</div>
+                                    </div>
+                                    <div class="report-stat">
+                                        <div class="report-stat-label">Total Medicines in Database</div>
+                                        <div class="report-stat-value" id="report-medicines">0</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Stock Alerts</h2>
+                            </div>
+                            <div class="card-body">
+                                <div id="report-stock-alerts" class="stock-alerts-list">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Patient Modal -->
+    <div id="patient-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Register New Patient</h2>
+                <button class="btn-icon" onclick="document.getElementById('patient-modal').classList.remove('active')">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form id="patient-form">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="p-name" class="form-control" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Age</label>
+                        <input type="number" id="p-age" class="form-control" required min="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Gender</label>
+                        <select id="p-gender" class="form-control" required>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Contact Number</label>
+                    <input type="text" id="p-contact" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Disease/Symptoms</label>
+                    <input type="text" id="p-disease" class="form-control" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="document.getElementById('patient-modal').classList.remove('active')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Patient</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Medicine Modal -->
+    <div id="medicine-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add New Medicine</h2>
+                <button class="btn-icon" onclick="document.getElementById('medicine-modal').classList.remove('active')">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form id="medicine-form">
+                <div class="form-group">
+                    <label class="form-label">Medicine Name</label>
+                    <input type="text" id="m-name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Company/Manufacturer</label>
+                    <input type="text" id="m-company" class="form-control" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Price (₹)</label>
+                        <input type="number" id="m-price" class="form-control" step="0.01" required min="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Expiry Date</label>
+                        <input type="date" id="m-expiry" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Initial Stock Quantity</label>
+                    <input type="number" id="m-qty" class="form-control" required min="0" value="100">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="document.getElementById('medicine-modal').classList.remove('active')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Medicine</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Billing Modal -->
+    <div id="billing-modal" class="modal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h2 class="modal-title">Create New Bill</h2>
+                <button class="btn-icon" onclick="document.getElementById('billing-modal').classList.remove('active')">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Select Patient</label>
+                    <select id="b-patient" class="form-control">
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+                
+                <div class="bill-items-section">
+                    <h3 class="section-title">Add Items</h3>
+                    <div class="add-item-form form-row">
+                        <div class="form-group flex-2">
+                            <select id="b-medicine" class="form-control">
+                                <!-- Populated by JS -->
+                            </select>
+                        </div>
+                        <div class="form-group flex-1">
+                            <input type="number" id="b-qty" class="form-control" placeholder="Qty" min="1" value="1">
+                        </div>
+                        <div class="form-group">
+                            <button type="button" id="btn-add-item" class="btn btn-primary w-full">Add</button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive mt-4">
+                        <table class="table" id="bill-items-table">
+                            <thead>
+                                <tr>
+                                    <th>Medicine</th>
+                                    <th>Price</th>
+                                    <th>Qty</th>
+                                    <th>Total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr id="empty-bill-msg">
+                                    <td colspan="5" class="text-center text-muted">No items added yet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="bill-total">
+                        Total Amount: <span id="b-total">₹0.00</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="document.getElementById('billing-modal').classList.remove('active')">Cancel</button>
+                <button type="button" id="btn-save-bill" class="btn btn-primary" disabled>Generate Bill</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stock Update Modal -->
+    <div id="stock-modal" class="modal">
+        <div class="modal-content modal-sm">
+            <div class="modal-header">
+                <h2 class="modal-title">Update Stock</h2>
+                <button class="btn-icon" onclick="document.getElementById('stock-modal').classList.remove('active')">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form id="stock-form">
+                <input type="hidden" id="s-med-name">
+                <div class="form-group">
+                    <label class="form-label" id="s-med-display-name">Medicine Name</label>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Current Quantity: <span id="s-current-qty" class="font-bold">0</span></label>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Add/Remove Quantity</label>
+                    <div class="flex gap-2">
+                        <button type="button" class="btn btn-outline" onclick="document.getElementById('s-change').value = parseInt(document.getElementById('s-change').value || 0) - 10">-10</button>
+                        <input type="number" id="s-change" class="form-control text-center" value="0">
+                        <button type="button" class="btn btn-outline" onclick="document.getElementById('s-change').value = parseInt(document.getElementById('s-change').value || 0) + 10">+10</button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="document.getElementById('stock-modal').classList.remove('active')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Stock</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bill View Modal -->
+    <div id="bill-view-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header no-border">
+                <button class="btn-icon ms-auto" onclick="document.getElementById('bill-view-modal').classList.remove('active')">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-body print-area" id="bill-print-area">
+                <div class="bill-header text-center mb-6">
+                    <h2 class="text-2xl font-bold text-primary flex-center justify-center gap-2 mb-2">
+                        <i class="fa-solid fa-heart-pulse"></i> MediManage Clinic
+                    </h2>
+                    <p class="text-sm text-muted">123 Health Avenue, Medical District</p>
+                    <p class="text-sm text-muted">Ph: +91 9876543210</p>
+                </div>
+                
+                <div class="bill-info flex-between mb-6 border-b pb-4">
+                    <div>
+                        <p class="text-sm"><strong>Patient:</strong> <span id="v-patient"></span></p>
+                        <p class="text-sm"><strong>Bill No:</strong> <span id="v-bill-id"></span></p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm"><strong>Date:</strong> <span id="v-date"></span></p>
+                    </div>
+                </div>
+                
+                <table class="table w-full mb-6 text-sm">
+                    <thead>
+                        <tr class="border-b">
+                            <th class="text-left py-2">Item</th>
+                            <th class="text-right py-2">Price</th>
+                            <th class="text-right py-2">Qty</th>
+                            <th class="text-right py-2">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="v-items">
+                        <!-- Populated by JS -->
+                    </tbody>
+                    <tfoot>
+                        <tr class="border-t font-bold">
+                            <td colspan="3" class="text-right py-3">Grand Total:</td>
+                            <td class="text-right py-3" id="v-total"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+                
+                <div class="text-center text-sm text-muted mt-8">
+                    <p>Thank you for visiting! Wishing you a speedy recovery.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="window.print()">
+                    <i class="fa-solid fa-print"></i> Print
+                </button>
+                <button type="button" class="btn btn-primary" onclick="document.getElementById('bill-view-modal').classList.remove('active')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
