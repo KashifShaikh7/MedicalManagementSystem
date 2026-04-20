@@ -42,15 +42,68 @@
                 <a href="#" class="nav-item" data-page="reports">
                     <i class="fa-solid fa-chart-simple"></i> Reports
                 </a>
+                <a href="#" class="nav-item" data-page="account">
+                    <i class="fa-solid fa-user-doctor"></i> Account
+                </a>
             </nav>
             
+            <div class="sidebar-footer1">
+                <div class="user-profile mb-4 flex items-center gap-4">
+                    <div class="avatar bg-primary text-primary-foreground">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div class="text-left" style="overflow: hidden;">
+                        <div class="font-bold text-sm" id="sidebar-user-name" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Not logged in</div>
+                        <div class="text-xs text-muted" id="sidebar-user-role">Guest</div>
+                    </div>
+                </div> <br>
+                <button class="btn btn-outline w-full btn-sm mb-4" onclick="app.logout()">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+                </button>
+            </div>
             <div class="sidebar-footer">
                 Medical Management System<br>v1.0.0
             </div>
         </aside>
 
-        <!-- Main Content -->
-        <div class="main-wrapper">
+        <!-- Auth Screen -->
+        <div id="auth-screen" class="auth-container">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <div class="logo flex-center gap-2">
+                        <i class="fa-solid fa-heart-pulse"></i>
+                        <span>MediManage</span>
+                    </div>
+                    <p class="text-muted mt-4" id="auth-subtitle">Sign in to your account</p>
+                </div>
+                
+                <form id="auth-form" class="auth-form">
+                    <div class="form-group" id="auth-name-group" style="display: none;">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" id="auth-name" class="form-control" placeholder="Dr. Jane Doe">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" id="auth-email" class="form-control" placeholder="doctor@medimanage.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="auth-password" class="form-control" placeholder="••••••••" required>
+                    </div>
+                    <div class="form-group mt-4">
+                        <button type="submit" class="btn btn-primary w-full" id="auth-submit-btn">Sign In</button>
+                    </div>
+                    
+                    <div class="auth-toggle">
+                        <span id="auth-toggle-text">Don't have an account?</span>
+                        <a href="#" id="auth-toggle-link" class="text-primary font-bold ml-1">Sign Up</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Main Content (Hidden until logged in) -->
+        <div class="main-wrapper" id="main-app" style="display: none;">
             <!-- Mobile Header -->
             <header class="mobile-header mobile-only">
                 <button id="open-sidebar" class="btn-icon">
@@ -306,9 +359,14 @@
 
                 <!-- Reports Page -->
                 <div id="page-reports" class="page">
-                    <div class="page-header">
-                        <h1 class="page-title">Reports</h1>
-                        <p class="page-description">View system analytics and summaries.</p>
+                    <div class="page-header flex-between">
+                        <div>
+                            <h1 class="page-title">Reports</h1>
+                            <p class="page-description">View system analytics and summaries.</p>
+                        </div>
+                        <button class="btn btn-outline" onclick="app.checkExpiredMedicines()">
+                            <i class="fa-solid fa-triangle-exclamation text-danger"></i> Check Expired Medicines
+                        </button>
                     </div>
 
                     <div class="reports-grid">
@@ -346,6 +404,67 @@
                                 <div id="report-stock-alerts" class="stock-alerts-list">
                                     <!-- Populated by JS -->
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Account Page -->
+                <div id="page-account" class="page">
+                    <div class="page-header">
+                        <h1 class="page-title">My Account</h1>
+                        <p class="page-description">Manage your profile and system settings.</p>
+                    </div>
+
+                    <div class="grid" style="display: grid; grid-template-columns: 1fr 2fr; gap: 24px;">
+                        <div class="card">
+                            <div class="card-header text-center pt-8">
+                                <div class="avatar-large bg-primary text-primary-foreground mx-auto mb-4" style="width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+                                    <i class="fa-solid fa-user-doctor"></i>
+                                </div>
+                                <h2 class="card-title" id="account-name">Doctor Name</h2>
+                                <p class="text-muted" id="account-role">Administrator</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="flex-between mb-4">
+                                    <span class="text-muted">Email</span>
+                                    <span class="font-medium" id="account-email">doctor@medimanage.com</span>
+                                </div>
+                                <div class="flex-between mb-4">
+                                    <span class="text-muted">Status</span>
+                                    <span class="badge badge-normal">Active</span>
+                                </div>
+                                <div class="flex-between">
+                                    <span class="text-muted">Joined</span>
+                                    <span class="font-medium">Today</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Profile Settings</h2>
+                                <p class="card-description">Update your personal information</p>
+                            </div>
+                            <div class="card-body">
+                                <form>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="form-label">Full Name</label>
+                                            <input type="text" class="form-control" id="settings-name" value="Doctor Name" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Email Address</label>
+                                            <input type="email" class="form-control" id="settings-email" value="doctor@medimanage.com" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Clinic/Hospital Name</label>
+                                        <input type="text" class="form-control" value="MediManage Main Branch">
+                                    </div>
+                                    <div class="form-group mt-4">
+                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
