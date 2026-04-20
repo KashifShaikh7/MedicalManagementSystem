@@ -1,13 +1,14 @@
 // --- STATE MANAGEMENT ---
 // Initialize mock data or load from localStorage
 const initialState = {
+    user: null,
     patients: [
         { id: "PT001", name: "Rahul Sharma", age: 45, gender: "Male", contact: "9876543210", disease: "Hypertension" },
         { id: "PT002", name: "Priya Singh", age: 32, gender: "Female", contact: "8765432109", disease: "Viral Fever" },
     ],
     medicines: [
-        { id: "M001", name: "Paracetamol 500mg", company: "GSK", price: "15.00", expiry: "2027-12-10" },
-        { id: "M002", name: "Amoxicillin 250mg", company: "Cipla", price: "45.50", expiry: "2028-08-15" },
+        { id: "M001", name: "Paracetamol 500mg", company: "GSK", price: "15.00", expiry: "2025-12-10" },
+        { id: "M002", name: "Amoxicillin 250mg", company: "Cipla", price: "45.50", expiry: "2024-08-15" },
     ],
     bills: [],
     stock: [
@@ -88,8 +89,17 @@ const store = {
 // --- APP LOGIC ---
 const app = {
     currentBillItems: [],
+    isLoginMode: true,
     
     init() {
+        // Setup Auth
+        this.setupAuth();
+        
+        // Check if logged in
+        if (store.data.user) {
+            this.showMainApp();
+        }
+        
         // Setup Navigation
         this.setupNavigation();
         
@@ -106,6 +116,113 @@ const app = {
         
         // Setup Billing logic
         this.setupBillingLogic();
+    },
+    
+    setupAuth() {
+        const toggleLink = document.getElementById('auth-toggle-link');
+        const toggleText = document.getElementById('auth-toggle-text');
+        const nameGroup = document.getElementById('auth-name-group');
+        const submitBtn = document.getElementById('auth-submit-btn');
+        const subtitle = document.getElementById('auth-subtitle');
+        const nameInput = document.getElementById('auth-name');
+        
+        toggleLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.isLoginMode = !this.isLoginMode;
+            
+            if (this.isLoginMode) {
+                nameGroup.style.display = 'none';
+                nameInput.removeAttribute('required');
+                submitBtn.textContent = 'Sign In';
+                subtitle.textContent = 'Sign in to your account';
+                toggleText.textContent = "Don't have an account?";
+                toggleLink.textContent = 'Sign Up';
+            } else {
+                nameGroup.style.display = 'block';
+                nameInput.setAttribute('required', 'true');
+                submitBtn.textContent = 'Create Account';
+                subtitle.textContent = 'Create a new account';
+                toggleText.textContent = 'Already have an account?';
+                toggleLink.textContent = 'Sign In';
+            }
+        });
+        
+        document.getElementById('auth-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+            
+            let name = "Doctor";
+            
+            if (!this.isLoginMode) {
+                name = document.getElementById('auth-name').value;
+            } else {
+                // Mock login name
+                name = email.split('@')[0];
+                name = name.charAt(0).toUpperCase() + name.slice(1);
+            }
+            
+            // Save mock user
+            store.data.user = {
+                name: name,
+                email: email,
+                role: 'Administrator'
+            };
+            store.save();
+            
+            this.showMainApp();
+        });
+        
+        // Handle account settings update
+        const settingsForm = document.querySelector('#page-account form');
+        if (settingsForm) {
+            settingsForm.onsubmit = (e) => {
+                e.preventDefault();
+                const newName = document.getElementById('settings-name').value;
+                if (store.data.user) {
+                    store.data.user.name = newName;
+                    store.save();
+                    
+                    // Update UI immediately
+                    document.getElementById('sidebar-user-name').textContent = newName;
+                    document.getElementById('account-name').textContent = newName;
+                    
+                    alert('Profile updated successfully!');
+                }
+            };
+        }
+    },
+    
+    showMainApp() {
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('main-app').style.display = 'flex';
+        
+        // Update user info in UI
+        if (store.data.user) {
+            document.getElementById('sidebar-user-name').textContent = store.data.user.name;
+            document.getElementById('sidebar-user-role').textContent = store.data.user.role;
+            
+            // Update account page
+            document.getElementById('account-name').textContent = store.data.user.name;
+            document.getElementById('account-role').textContent = store.data.user.role;
+            document.getElementById('account-email').textContent = store.data.user.email;
+            
+            document.getElementById('settings-name').value = store.data.user.name;
+            document.getElementById('settings-email').value = store.data.user.email;
+        }
+    },
+    
+    logout() {
+        store.data.user = null;
+        store.save();
+        
+        document.getElementById('auth-form').reset();
+        document.getElementById('main-app').style.display = 'none';
+        document.getElementById('auth-screen').style.display = 'flex';
+        
+        // Reset to dashboard for next login
+        this.navigateTo('dashboard');
     },
     
     setupNavigation() {
@@ -454,6 +571,15 @@ const app = {
                 return;
             }
             
+            // Check expiry
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const expiryDate = new Date(medicine.expiry);
+            if (expiryDate < today) {
+                alert(`Cannot add expired medicine! Expired on: ${medicine.expiry}`);
+                return;
+            }
+            
             const price = parseFloat(medicine.price);
             
             // Check if already in list
@@ -571,6 +697,28 @@ const app = {
         document.getElementById('v-total').textContent = `₹${bill.totalAmount.toFixed(2)}`;
         
         document.getElementById('bill-view-modal').classList.add('active');
+    },
+
+    checkExpiredMedicines() {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        const expired = store.data.medicines.filter(m => {
+            const expDate = new Date(m.expiry);
+            return expDate < today;
+        });
+        
+        if (expired.length === 0) {
+            alert("Good news! No medicines are expired.");
+            return;
+        }
+        
+        let msg = `Found ${expired.length} expired medicine(s):\n\n`;
+        expired.forEach(m => {
+            msg += `- ${m.name} (Expired on: ${m.expiry})\n`;
+        });
+        
+        alert(msg);
     }
 };
 
